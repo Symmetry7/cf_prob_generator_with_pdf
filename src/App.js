@@ -27,6 +27,7 @@ function App() {
   const [maxRating, setMaxRating] = useState(3500);
   const [cfHandle, setCfHandle] = useState('');
   const [handleStatus, setHandleStatus] = useState('');
+  const [selectedEra, setSelectedEra] = useState('any'); // 'any', 'before2022', 'after2022'
 
   // Available tags
   const availableTags = [
@@ -59,6 +60,12 @@ function App() {
     { value: 'educational', label: 'Educational' },
     { value: 'global', label: 'Global Round' },
     { value: 'div1+div2', label: 'Div 1 + Div 2' }
+  ];
+
+  const availableEras = [
+    { value: 'any', label: 'Any Era' },
+    { value: 'before2022', label: 'Before 2022' },
+    { value: 'after2022', label: 'After 2022' }
   ];
 
   // Load sheet problems from localStorage on component mount
@@ -157,6 +164,30 @@ function App() {
         });
       }
       
+      // Era matching - check if contest is before or after 2022
+      let eraMatch = true;
+      if (selectedEra !== 'any') {
+        const contestName = contestNames[p.contestId] || '';
+        // Extract year from contest name (most contests have year in their name)
+        const yearMatch = contestName.match(/(\d{4})/);
+        if (yearMatch) {
+          const year = parseInt(yearMatch[1]);
+          if (selectedEra === 'before2022') {
+            eraMatch = year < 2022;
+          } else if (selectedEra === 'after2022') {
+            eraMatch = year >= 2022;
+          }
+        } else {
+          // If no year found, try to estimate based on contest ID
+          // Contest IDs are generally sequential, so we can estimate
+          if (selectedEra === 'before2022') {
+            eraMatch = p.contestId < 1500; // Approximate threshold
+          } else if (selectedEra === 'after2022') {
+            eraMatch = p.contestId >= 1500; // Approximate threshold
+          }
+        }
+      }
+      
       let tagMatch = true;
       if (selectedTags.length > 0) {
         tagMatch = selectedTags.some(tag => 
@@ -164,12 +195,12 @@ function App() {
         );
       }
       
-      return typeMatch && ratingMatch && contestMatch && tagMatch;
+      return typeMatch && ratingMatch && contestMatch && eraMatch && tagMatch;
     });
     
     setFilteredProblems(filtered);
     return filtered;
-  }, [problems, selectedProblemTypes, selectedContestTypes, minRating, maxRating, selectedTags, contestNames]);
+  }, [problems, selectedProblemTypes, selectedContestTypes, minRating, maxRating, selectedTags, contestNames, selectedEra]);
 
   // Generate a random problem - FIXED: No more infinite loop!
   const generateProblem = useCallback(() => {
@@ -286,6 +317,11 @@ function App() {
     });
   }, []);
 
+  // Handle era selection
+  const handleEraToggle = useCallback((era) => {
+    setSelectedEra(era);
+  }, []);
+
   // Handle handle submission
   const handleHandleSubmit = useCallback(() => {
     if (cfHandle.trim()) {
@@ -340,6 +376,9 @@ function App() {
           selectedContestTypes={selectedContestTypes}
           onContestTypeToggle={handleContestTypeToggle}
           availableContestTypes={availableContestTypes}
+          selectedEra={selectedEra}
+          onEraToggle={handleEraToggle}
+          availableEras={availableEras}
           minRating={minRating}
           setMinRating={setMinRating}
           maxRating={maxRating}

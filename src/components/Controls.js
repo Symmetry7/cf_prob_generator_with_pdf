@@ -7,6 +7,9 @@ function Controls({
   selectedContestTypes,
   onContestTypeToggle,
   availableContestTypes,
+  selectedEra,
+  onEraToggle,
+  availableEras,
   minRating,
   setMinRating,
   maxRating,
@@ -55,71 +58,71 @@ function Controls({
           </div>
         </div>
 
-        {/* Rating Range */}
-        <div className="filter-row">
-          <div className="filter-item">
-            <label><i className="fas fa-star"></i> Min Rating</label>
-            <div className="input-with-icon">
-              <input
-                type="number"
-                value={minRating}
-                onChange={(e) => setMinRating(parseInt(e.target.value) || 800)}
-                min="800"
-                max="3500"
-                step="100"
-              />
-              <i className="input-icon fas fa-arrow-down"></i>
-            </div>
+        {/* Era Selection */}
+        <div className="filter-item">
+          <label><i className="fas fa-calendar-alt"></i> Era</label>
+          <div className="multi-select-container">
+            {availableEras.map(era => (
+              <button
+                key={era.value}
+                className={`multi-select-btn ${selectedEra === era.value ? 'selected' : ''}`}
+                onClick={() => onEraToggle(era.value)}
+              >
+                {era.label}
+              </button>
+            ))}
           </div>
-          <div className="filter-item">
-            <label><i className="fas fa-star"></i> Max Rating</label>
-            <div className="input-with-icon">
-              <input
-                type="number"
-                value={maxRating}
-                onChange={(e) => setMaxRating(parseInt(e.target.value) || 3500)}
-                min="800"
-                max="3500"
-                step="100"
-              />
-              <i className="input-icon fas fa-arrow-up"></i>
-            </div>
+        </div>
+
+        {/* Rating Range */}
+        <div className="filter-item">
+          <label><i className="fas fa-star"></i> Rating Range</label>
+          <div className="rating-inputs">
+            <input
+              type="number"
+              placeholder="Min"
+              value={minRating}
+              onChange={(e) => setMinRating(parseInt(e.target.value) || 800)}
+              min="800"
+              max="3500"
+            />
+            <span>-</span>
+            <input
+              type="number"
+              placeholder="Max"
+              value={maxRating}
+              onChange={(e) => setMaxRating(parseInt(e.target.value) || 3500)}
+              min="800"
+              max="3500"
+            />
           </div>
         </div>
 
         {/* Codeforces Handle */}
         <div className="filter-item">
-          <label><i className="fas fa-user"></i> Codeforces Handle</label>
-          <div className="input-with-button">
+          <label><i className="fas fa-user"></i> CF Handle</label>
+          <div className="handle-input">
             <input
               type="text"
+              placeholder="Enter your handle"
               value={cfHandle}
               onChange={(e) => setCfHandle(e.target.value)}
-              placeholder="Enter your CF handle"
             />
-            <button className="small-button" onClick={onHandleSubmit}>
-              <i className="fas fa-search"></i> Check
+            <button onClick={onHandleSubmit} className="handle-submit-btn">
+              <i className="fas fa-search"></i>
             </button>
           </div>
-          {handleStatus && (
-            <span className={`status-message ${handleStatus.includes('Error') ? 'error' : 'success'}`}>
-              {handleStatus}
-            </span>
-          )}
+          {handleStatus && <div className="handle-status">{handleStatus}</div>}
         </div>
 
         {/* Tags Selection */}
-        <div className="tags-filter-item">
-          <label><i className="fas fa-tags"></i> Problem Tags</label>
-          <div className="filter-logic-display">
-            <div className="filter-logic-dot"></div>
-            <span>Select tags to filter problems (OR logic)</span>
-          </div>
-          <div className="tag-buttons-container">
+        <div className="filter-item">
+          <label><i className="fas fa-tags"></i> Tags</label>
+          <div className="tags-container">
             {availableTags.map(tag => (
               <button
                 key={tag}
-                className={`tag-button ${selectedTags.includes(tag) ? 'selected' : ''}`}
+                className={`tag-btn ${selectedTags.includes(tag) ? 'selected' : ''}`}
                 onClick={() => onTagToggle(tag)}
               >
                 {tag}
@@ -128,9 +131,8 @@ function Controls({
           </div>
         </div>
       </div>
-
       <button className="glow-on-hover" onClick={onGenerateProblem}>
-        <span className="btn-icon"><i className="fas fa-bolt"></i></span> 
+        <span className="btn-icon"><i className="fas fa-bolt"></i></span>
         <span className="btn-text">Generate Problem</span>
         <div className="btn-hover-effect"></div>
       </button>
