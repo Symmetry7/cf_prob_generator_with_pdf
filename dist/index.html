@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Codeforces Problem Selector</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='60%' font-size='70' text-anchor='middle' dominant-baseline='middle'>🎯</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <header class="animate__animated animate__fadeInDown">
+            <div class="logo">
+                <span class="logo-symm">symm</span><span class="logo-div2">Div2+</span>
+                <span class="logo-badge">BETA</span>
+            </div>
+            <h1>Codeforces Problem Selector</h1>
+            <p class="subtitle">Sharpen your skills with targeted Div 2 A-G problems</p>
+            <div class="header-decoration">
+                <div class="decoration-circle"></div>
+                <div class="decoration-circle"></div>
+                <div class="decoration-circle"></div>
+            </div>
+        </header>
+
+        <div class="controls animate__animated animate__fadeIn animate__delay-1s">
+            <div class="filter-group glassmorphism">
+                <div class="filter-item">
+                    <label for="problem-type">
+                        <i class="fas fa-puzzle-piece"></i> Problem Type
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="problem-type">
+                            <option value="A">A (Easy)</option>
+                            <option value="B">B (Medium)</option>
+                            <option value="C">C (Hard)</option>
+                            <option value="D">D (Challenge)</option>
+                            <option value="E">E (Expert)</option>
+                            <option value="F">F (Master)</option>
+                            <option value="G">G (Grandmaster)</option>
+                            <option value="random" selected>Random (A-G)</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+                
+                <div class="filter-item">
+                    <label for="contest-type">
+                        <i class="fas fa-trophy"></i> Contest Type
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="contest-type">
+                            <option value="any" selected>Any Contest Type</option>
+                            <option value="Div. 1">Div. 1</option>
+                            <option value="Div. 2">Div. 2</option>
+                            <option value="Div. 3">Div. 3</option>
+                            <option value="Div. 4">Div. 4</option>
+                            <option value="Educational Codeforces Round">Educational Round</option>
+                            <option value="Global Round">Global Round</option>
+                            <option value="Hello 20">Hello Round</option>
+                            <option value="Good Bye">Good Bye Round</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+
+                <div class="filter-item tags-filter-item">
+                    <div class="filter-logic-display">
+                        <span class="filter-logic-dot"></span> Filter Logic: <span id="filter-logic-type">OR</span>
+                    </div>
+                    <label>
+                        <i class="fas fa-tags"></i> Tags (Multi-select)
+                    </label>
+                    <div id="tags-container" class="tag-buttons-container glassmorphism-tags">
+                        </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="min-rating">
+                            <i class="fas fa-arrow-down"></i> Min Rating
+                        </label>
+                        <div class="input-with-icon">
+                            <input type="number" id="min-rating" placeholder="800" min="800" max="3500" value="800" step="100">
+                            <span class="input-icon rating-star">✩</span>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label for="max-rating">
+                            <i class="fas fa-arrow-up"></i> Max Rating
+                        </label>
+                        <div class="input-with-icon">
+                            <input type="number" id="max-rating" placeholder="3500" min="800" max="3500" value="3500" step="100">
+                            <span class="input-icon rating-star">✩</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label for="cf-handle-input">
+                        <i class="fas fa-user"></i> Codeforces Handle (Optional)
+                    </label>
+                    <div class="input-with-button">
+                        <input type="text" id="cf-handle-input" placeholder="Enter your handle">
+                        <button id="load-handle-btn" class="glow-on-hover small-button">
+                            <span class="btn-text">Check</span>
+                        </button>
+                    </div>
+                    <small id="handle-status-message" class="status-message"></small>
+                </div>
+            </div>
+            
+            <button id="generate-btn" class="glow-on-hover">
+                <span class="btn-icon"><i class="fas fa-bolt"></i></span> 
+                <span class="btn-text">Generate Problem</span>
+                <div class="btn-hover-effect"></div>
+            </button>
+        </div>
+
+        <div class="result-container animate__animated animate__fadeIn animate__delay-1s">
+            <div id="loading" class="loading glassmorphism">
+                <div class="spinner">
+                    <div class="spinner-blade"></div>
+                    <div class="spinner-blade"></div>
+                    <div class="spinner-blade"></div>
+                    <div class="spinner-blade"></div>
+                    <div class="spinner-blade"></div>
+                    <div class="spinner-blade"></div>
+                    <div class="spinner-blade"></div>
+                    <div class="spinner-blade"></div>
+                </div>
+                <p>Loading problem database...</p>
+            </div>
+            <div id="problem-display" class="hidden">
+                <div class="problem-card glassmorphism">
+                    <div class="problem-header">
+                        <div class="problem-type-badge" id="problem-type-badge">A</div>
+                        <h2 id="problem-title"></h2>
+                        <div class="problem-contest-id" id="problem-contest-id"></div>
+                        <div class="difficulty-meter">
+                            <div class="difficulty-labels">
+                                <span>Easy</span>
+                                <span>Medium</span>
+                                <span>Hard</span>
+                                <span>Challenging</span>
+                                <span>Master</span>
+                            </div>
+                            <div class="difficulty-bar-container">
+                                <div class="difficulty-bar-track"></div>
+                                <div class="difficulty-bar-fill" id="difficulty-bar-fill"></div>
+                                <div class="difficulty-pointer" id="difficulty-pointer">
+                                    <div class="pointer-arrow"></div>
+                                    <span class="pointer-value"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span id="problem-rating"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span id="problem-solved-count"></span>
+                        </div>
+                        <div class="meta-item">
+                            <div id="problem-solved-status" class="problem-solved-status"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-tags" id="problem-tags"></div>
+                    
+                    <div class="actions">
+                        <a id="problem-link" href="#" target="_blank" class="btn solve-btn">
+                            <span class="btn-icon"><i class="fas fa-code"></i></span> 
+                            <span class="btn-text">Solve Problem</span>
+                            <div class="btn-hover-effect"></div>
+                        </a>
+                        <button id="next-btn" class="btn next-btn">
+                            <span class="btn-icon"><i class="fas fa-random"></i></span> 
+                            <span class="btn-text">Next Problem</span>
+                            <div class="btn-hover-effect"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats animate__animated animate__fadeIn animate__delay-2s">
+            <div class="stat-item glassmorphism">
+                <div class="stat-icon"><i class="fas fa-database"></i></div>
+                <div class="stat-content">
+                    <span class="stat-value" id="total-problems">0</span>
+                    <span class="stat-label">Total Problems</span>
+                </div>
+            </div>
+            <div class="stat-item glassmorphism">
+                <div class="stat-icon"><i class="fas fa-filter"></i></div>
+                <div class="stat-content">
+                    <span class="stat-value" id="filtered-problems">0</span>
+                    <span class="stat-label">Matching Filters</span>
+                </div>
+            </div>
+            <div class="stat-item glassmorphism">
+                <div class="stat-icon"><i class="fas fa-sync-alt"></i></div>
+                <div class="stat-content">
+                    <span class="stat-value" id="last-updated">Today</span>
+                    <span class="stat-label">Last Updated</span>
+                </div>
+            </div>
+        </div>
+
+        <footer class="animate__animated animate__fadeIn animate__delay-2s">
+            <p>Made with <span class="heart-pulse">❤️</span> By Symmetry</p>
+            <div class="social-links">
+                <a href="https://www.instagram.com/symmv_09" target="_blank" class="social-link">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+                <a href="https://www.linkedin.com/in/vinayak-tiwari-960976274/" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+            </div>
+            <p class="credit">symmDiv2+ © 2025 | Not affiliated with Codeforces</p>
+            <div class="footer-decoration">
+                <div class="decoration-dot"></div>
+                <div class="decoration-dot"></div>
+                <div class="decoration-dot"></div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
